@@ -32,6 +32,6 @@ jobs:
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKENGH }}
-          registry: docker.pkg.github.com
+          registry: ghcr.io
           repository: glebnaz/notion-recurring-tasks/stable
           tag_with_ref: true
