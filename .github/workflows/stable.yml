@@ -33,5 +33,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKENGH }}
           registry: docker.pkg.github.com
-          repository: brotherhood228/bro-bot/stable
+          repository: glebnaz/notion-recurring-tasks/stable
           tag_with_ref: true
