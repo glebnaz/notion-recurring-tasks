@@ -47,6 +47,7 @@ func (d *DebugServer) AddCheckers(checkers []Checker) {
 }
 
 func (d *DebugServer) Live(c echo.Context) error {
+	log.Infof("Live check at %s", time.Now())
 	d.m.Lock()
 	defer d.m.Unlock()
 	for i := range d.checkers {
@@ -59,6 +60,7 @@ func (d *DebugServer) Live(c echo.Context) error {
 }
 
 func (d *DebugServer) Ready(c echo.Context) error {
+	log.Infof("Ready check at %s", time.Now())
 	if d.ready {
 		return c.String(http.StatusOK, "OK")
 	}

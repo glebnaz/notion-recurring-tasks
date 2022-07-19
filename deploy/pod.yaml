@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: notion-recurring-tasks
+spec:
+  containers:
+    - name: notion-recurring-tasks
+      image: ghcr.io/glebnaz/notion-recurring-tasks:init
+      imagePullPolicy: Always
+  imagePullSecrets:
+    - name: gh
