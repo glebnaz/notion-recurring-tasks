@@ -28,5 +28,11 @@ spec:
                   value: Awesome
             initialDelaySeconds: 3
             periodSeconds: 3
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8084
+            failureThreshold: 30
+            periodSeconds: 10
       imagePullSecrets:
         - name: gh
