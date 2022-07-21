@@ -1,0 +1,38 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notion-recurring-tasks
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: notion-recurring-tasks
+  template:
+    metadata:
+      labels:
+        name: notion-recurring-tasks
+    spec:
+      containers:
+        - name: notion-recurring-tasks
+          image: ghcr.io/glebnaz/notion-recurring-tasks/webinar:webinar
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /live
+              port: 8084
+              httpHeaders:
+                - name: Custom-Header
+                  value: Awesome
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          startupProbe:
+            httpGet:
+              path: /ready
+              port: 8084
+            failureThreshold: 30
+            periodSeconds: 10
+      imagePullSecrets:
+        - name: gh

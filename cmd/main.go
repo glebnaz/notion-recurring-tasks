@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"github.com/glebnaz/notion-recurring-tasks/internal/server"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -28,7 +27,7 @@ func main() {
 	srv := server.NewServer()
 
 	srv.AddChecker(server.NewDefaultChecker("simple", func() error {
-		return errors.New("error")
+		return nil
 	}))
 
 	srv.Run()
