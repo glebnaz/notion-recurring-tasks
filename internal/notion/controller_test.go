@@ -2,29 +2,14 @@ package notion
 
 import (
 	"context"
-	"testing"
-
+	"fmt"
 	"github.com/jomei/notionapi"
+	"testing"
 )
 
-func Test_controller_AddNewPageToDataBase(t *testing.T) {
-	type fields struct {
-		cli notionapi.Client
-	}
-	type args struct {
-		ctx context.Context
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-	}{
-		{},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			c := &controller{}
-			c.AddNewPageToDataBase(context.Background())
-		})
-	}
+func Test_controller_test(t *testing.T) {
+	cli := notionapi.NewClient("secret_oVEbCPMpf59cCB4wCfkFqcicR4yae4LMWaCcAoM2cH0")
+
+	d, err := cli.Page.Get(context.Background(), notionapi.PageID("05cde83f1fc04030b02a587e4a144c21"))
+	fmt.Println(d, err)
 }

@@ -2,53 +2,57 @@ package notion
 
 import (
 	"context"
-	"fmt"
-
+	"github.com/glebnaz/notion-recurring-tasks/internal/config"
 	api "github.com/jomei/notionapi"
+	log "github.com/sirupsen/logrus"
 )
 
 type controller struct {
-	cli api.Client
-	//secret_oVEbCPMpf59cCB4wCfkFqcicR4yae4LMWaCcAoM2cH0
+	cli *api.Client
 }
 
-func (c *controller) AddNewPageToDataBase(ctx context.Context) {
-	cli := api.NewClient("secret_oVEbCPMpf59cCB4wCfkFqcicR4yae4LMWaCcAoM2cH0")
-
-	p, err := cli.Page.Get(ctx, "ba85f0c44f3b4ce4b3579dc6f39fa11e")
-	fmt.Println(err)
-
-	fmt.Printf("Icon: %v\n  ", *p.Icon)
-
-	page, err := cli.Page.Create(ctx, &api.PageCreateRequest{
+func (c *controller) AddNewPageToDataBase(ctx context.Context, page config.RecurringTask) error {
+	pageRequest := &api.PageCreateRequest{
 		Parent: api.Parent{
 			Type:       "database_id",
-			DatabaseID: "295540f6c3eb41a5bfa657a169a60610",
+			DatabaseID: api.DatabaseID(page.ParentID),
 		},
 		Properties: api.Properties{
-			"Name": api.TitleProperty{
-				Type: "title",
-				Title: []api.RichText{
-					{
-						Type: "text",
-						Text: api.Text{
-							Content: "name form golang",
-						},
-					},
+			//todo delete constant
+			"Name":   generateTitle(page.Title),
+			"Status": generateStatus(page.Status),
+		},
+	}
+
+	_, err := c.cli.Page.Create(ctx, pageRequest)
+	if err != nil {
+		log.Errorf("Error creating page: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+func generateStatus(status config.Status) *api.SelectProperty {
+	return &api.SelectProperty{
+		Type: "select",
+		Select: api.Option{
+			Name:  status.Name,
+			Color: api.Color(status.Color),
+		},
+	}
+}
+
+func generateTitle(title string) api.TitleProperty {
+	return api.TitleProperty{
+		Type: "title",
+		Title: []api.RichText{
+			{
+				Type: "text",
+				Text: api.Text{
+					Content: title,
 				},
 			},
-			//"Title": api.RichTextProperty{
-			//	RichText: []api.RichText{
-			//		{
-			//			Type: "text",
-			//			Text: api.Text{
-			//				Content: "title form golang",
-			//			},
-			//		},
-			//	},
-			//},
 		},
-	})
-
-	fmt.Println(page, err)
+	}
 }
