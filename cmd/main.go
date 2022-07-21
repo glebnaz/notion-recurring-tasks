@@ -3,6 +3,7 @@ package main
 import (
 	log "github.com/sirupsen/logrus"
 	"os"
+	"time"
 )
 
 func init() {
@@ -20,4 +21,15 @@ func init() {
 
 func main() {
 	log.Infof("Starting...")
+	ch := make(chan string)
+	go print()
+
+	<-ch
+}
+
+func print() {
+	for {
+		time.Sleep(time.Second)
+		log.Infof("Printing...")
+	}
 }
