@@ -82,6 +82,7 @@ func (d *DebugServer) Live(c echo.Context) error {
 			return c.String(http.StatusInternalServerError, err.Error())
 		}
 	}
+	log.Infof("Checkers passed")
 	return c.String(http.StatusOK, "OK")
 }
 
