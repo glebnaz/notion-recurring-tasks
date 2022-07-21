@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"github.com/glebnaz/notion-recurring-tasks/internal/server"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"time"
@@ -21,10 +23,16 @@ func init() {
 
 func main() {
 	log.Infof("Starting...")
-	ch := make(chan string)
 	go print()
 
-	<-ch
+	srv := server.NewServer()
+
+	srv.AddChecker(server.NewDefaultChecker("simple", func() error {
+		return errors.New("error")
+	}))
+
+	srv.Run()
+
 }
 
 func print() {

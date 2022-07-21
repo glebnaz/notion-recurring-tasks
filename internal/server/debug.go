@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 )
 
 type DebugServer struct {
-	PORT string
+	PORT string `json:"port" envconfig:"PORT" default:":8084"`
 
 	engine *echo.Echo
 	m      sync.Mutex
@@ -107,4 +108,42 @@ func NewDefaultChecker(name string, checkFunc func() error) *DefaultChecker {
 		CheckFunc: checkFunc,
 		NameCheck: name,
 	}
+}
+
+func (d *DebugServer) Run(ctx context.Context) error {
+	log.Infof("Run debug server at %s", time.Now())
+	var err error
+	func() {
+		err = d.engine.Start(d.PORT)
+	}()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		default:
+			if err != nil {
+				d.SetReady(false)
+				return err
+			}
+		}
+	}
+}
+
+func (d *DebugServer) Shutdown(ctx context.Context) {
+	log.Infof("Shutdown debug server at %s", time.Now())
+	d.SetReady(false)
+	ctxShutDown, cancel := context.WithTimeout(context.Background(), d.shutdownTimeout)
+	defer cancel()
+
+	errShutDown := d.engine.Shutdown(ctxShutDown)
+	if errShutDown != nil {
+		log.Panicf("shutdown debug server error %s", errShutDown)
+	}
+
+	log.Info("Debug Server shutdown graceful")
+}
+
+func (d *DebugServer) setShutDownTimeout(timeout time.Duration) {
+	d.shutdownTimeout = timeout
 }
