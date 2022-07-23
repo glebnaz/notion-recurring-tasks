@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/glebnaz/notion-recurring-tasks/internal/server"
 	"github.com/glebnaz/notion-recurring-tasks/internal/service"
+	"github.com/glebnaz/witcher/engine"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -53,7 +53,7 @@ func init() {
 
 func main() {
 	log.Infof("Starting App. Release: %s Commit: %s  BuildTime: %s", Release, Commit, BuildTime)
-	s := server.NewServer()
+	s := engine.NewServer()
 
 	ctx := context.Background()
 
